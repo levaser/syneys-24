@@ -10,7 +10,7 @@ namespace Game.Character
     }
 
     [CreateAssetMenu(fileName = "New MoveAction Config", menuName = "Actions/MoveAction Config", order = 51)]
-    public class MoveAction : Action
+    public class MoveAction : DefaultAction
     {
         [field: SerializeField]
         public int Distance { get; private set; }

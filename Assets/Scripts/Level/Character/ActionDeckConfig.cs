@@ -6,6 +6,6 @@ namespace Game.Character
     public class ActionDeckConfig : ScriptableObject
     {
         [field: SerializeField]
-        public Action[] Actions { get; private set; }
+        public DefaultAction[] Actions { get; private set; }
     }
 }

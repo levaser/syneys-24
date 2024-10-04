@@ -9,7 +9,7 @@ namespace Game.Character
     public class CharacterDeck
     {
         [field: SerializeField]
-        public Stack<Action> Actions { get; private set; }
+        public Stack<DefaultAction> Actions { get; private set; }
 
         [Inject]
         public CharacterDeck
@@ -17,10 +17,10 @@ namespace Game.Character
             LevelConfig levelConfig
         )
         {
-            List<Action> actionsList = levelConfig.ActionDeck.Actions.ToList();
+            List<DefaultAction> actionsList = levelConfig.ActionDeck.Actions.ToList();
             actionsList.Shuffle();
 
-            Actions = new Stack<Action>(actionsList);
+            Actions = new Stack<DefaultAction>(actionsList);
         }
     }
 }
