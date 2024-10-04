@@ -14,8 +14,8 @@ public class CharacterMovement : MonoBehaviour
     private readonly LevelStarter _levelStarter;
     private float currentWaitTime;
 
-    private Vector3 targetPosition;          
-    private Quaternion targetRotation;          
+    private Vector3 targetPosition;
+    private Quaternion targetRotation;
 
     private bool isMoving = false;
     private bool isRotating = false;
@@ -25,13 +25,13 @@ public class CharacterMovement : MonoBehaviour
     private int[,] currentPosition;
     private int currentRow = 0;
     private int currentColumn = 0;
-    
-    private int currentDirection = 0;   
+
+    private int currentDirection = 0;
     private void Start()
-    {        
-        currentPosition = new int[5, 5];       
+    {
+        currentPosition = new int[5, 5];
         currentWaitTime = waitTimer;
-        InitializationGrid();       
+        InitializationGrid();
     }
 
     #region TEST BUTTONS
@@ -41,16 +41,16 @@ public class CharacterMovement : MonoBehaviour
         if (CheckNextStep(currentDirection) == true)
         {
             MovingByAlgorithm(1);
-        }   
+        }
     }
-    
+
     public void Left()
-    {       
+    {
         MovingByAlgorithm(2);
     }
 
     public void Right()
-    {       
+    {
         MovingByAlgorithm(3);
     }
     #endregion
@@ -61,9 +61,9 @@ public class CharacterMovement : MonoBehaviour
         {
             for (int b = 0; b < currentPosition.GetLength(1); b++)
             {
-                currentPosition[i, b] = b;               
-            }            
-        }            
+                currentPosition[i, b] = b;
+            }
+        }
     }
 
     private bool CheckNextStep(int currentDirection)
@@ -75,30 +75,30 @@ public class CharacterMovement : MonoBehaviour
                 if (currentColumn < currentPosition.GetLength(1)-1)
                 {
                     currentColumn++;
-                    isChecked = true;                   
+                    isChecked = true;
                 }
                 break;
             case 1:                                    //Go Right
                 if (currentRow < currentPosition.GetLength(0)-1)
                 {
                     currentRow++;
-                    isChecked = true;                    
-                }               
+                    isChecked = true;
+                }
                 break;
             case 2:                                    //Go Down
                 if (currentColumn > 0)
                 {
                     currentColumn--;
-                    isChecked = true;                  
-                }                
+                    isChecked = true;
+                }
                 break;
 
             case 3:                                    //Go Left
                 if (currentRow > 0)
                 {
                     currentRow--;
-                    isChecked = true;                   
-                }                
+                    isChecked = true;
+                }
                 break;
         }
         return isChecked;
@@ -111,7 +111,7 @@ public class CharacterMovement : MonoBehaviour
             if (currentDirection < 3)
                 currentDirection++;
             else
-                currentDirection = 0; 
+                currentDirection = 0;
         }
         if (right == false)
         {
@@ -120,10 +120,10 @@ public class CharacterMovement : MonoBehaviour
             else
                 currentDirection = 3;
         }
-    }   
+    }
 
     public void MovingByAlgorithm(int Action)
-    {      
+    {
         switch (Action)
         {
             case 1:
@@ -164,7 +164,7 @@ public class CharacterMovement : MonoBehaviour
             //}
             //else
             //{
-            //   
+            //
             //}
         }
     }
@@ -174,8 +174,8 @@ public class CharacterMovement : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         if (transform.rotation == targetRotation)
         {
-            transform.rotation = targetRotation;                       
-            isRotating = false;           
+            transform.rotation = targetRotation;
+            isRotating = false;
         }
     }
 
@@ -186,7 +186,7 @@ public class CharacterMovement : MonoBehaviour
         {
             Debug.Log("Interaction finished");
             isInteracting = false;
-            currentWaitTime = waitTimer;            
+            currentWaitTime = waitTimer;
         }
     }
 
@@ -197,7 +197,7 @@ public class CharacterMovement : MonoBehaviour
         {
             Debug.Log("Attack finished");
             isAttacking = false;
-            currentWaitTime = waitTimer;           
+            currentWaitTime = waitTimer;
         }
     }
 
@@ -210,6 +210,6 @@ public class CharacterMovement : MonoBehaviour
         if (isInteracting)
             Interaction();
         if (isAttacking)
-            Attack();      
+            Attack();
     }
 }

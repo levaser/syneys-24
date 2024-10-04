@@ -1,4 +1,5 @@
 using Array2DEditor;
+using Game.Character;
 using UnityEngine;
 
 namespace Game.Levels
@@ -8,5 +9,8 @@ namespace Game.Levels
     {
         [field: SerializeField]
         public Array2DCellType Grid { get; private set; }
+
+        [field: SerializeField]
+        public ActionDeckConfig ActionDeck { get; private set; }
     }
 }
