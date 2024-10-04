@@ -1,3 +1,6 @@
+using Array2DEditor;
+using Game;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,36 +11,120 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float waitTimer;
+    private readonly LevelStarter _levelStarter;
     private float currentWaitTime;
 
-    private Vector3 targetPosition;             // Целевая позиция
-    private Quaternion targetRotation;          // Целевое вращение    
+    private Vector3 targetPosition;          
+    private Quaternion targetRotation;          
 
     private bool isMoving = false;
     private bool isRotating = false;
     private bool isInteracting = false;
     private bool isAttacking = false;
 
-    private int tick = 0;
-    private List<int> currentActions = new List<int>();
-
+    private int[,] currentPosition;
+    private int currentRow = 0;
+    private int currentColumn = 0;
+    
+    private int currentDirection = 0;   
     private void Start()
-    {
+    {        
+        currentPosition = new int[5, 5];       
         currentWaitTime = waitTimer;
-        #region TEST
-        List<int> testMoving = new List<int>(){1, 1, 3, 1, 2, 1, 4, 1, 5};
-        MovingByAlgorithm(testMoving);
-        #endregion
+        InitializationGrid();       
     }
 
-    /// <summary>
-    /// Движение по заданному алгоритму
-    /// </summary>
-    /// <param name="listActions"> список действий</param>
-    public void MovingByAlgorithm(List<int> listActions)
+    #region TEST BUTTONS
+
+    public void Forward()
     {
-        currentActions = listActions;
-        switch (currentActions[tick])
+        if (CheckNextStep(currentDirection) == true)
+        {
+            MovingByAlgorithm(1);
+        }   
+    }
+    
+    public void Left()
+    {       
+        MovingByAlgorithm(2);
+    }
+
+    public void Right()
+    {       
+        MovingByAlgorithm(3);
+    }
+    #endregion
+
+    private void InitializationGrid()
+    {
+        for (int i = 0; i < currentPosition.GetLength(0);  i++)
+        {
+            for (int b = 0; b < currentPosition.GetLength(1); b++)
+            {
+                currentPosition[i, b] = b;               
+            }            
+        }            
+    }
+
+    private bool CheckNextStep(int currentDirection)
+    {
+        bool isChecked = false;
+        switch (currentDirection)
+        {
+            case 0:                                     //Go Up
+                if (currentColumn < currentPosition.GetLength(1)-1)
+                {
+                    currentColumn++;
+                    isChecked = true;                   
+                }
+                break;
+            case 1:                                    //Go Right
+                if (currentRow < currentPosition.GetLength(0)-1)
+                {
+                    currentRow++;
+                    isChecked = true;                    
+                }               
+                break;
+            case 2:                                    //Go Down
+                if (currentColumn > 0)
+                {
+                    currentColumn--;
+                    isChecked = true;                  
+                }                
+                break;
+
+            case 3:                                    //Go Left
+                if (currentRow > 0)
+                {
+                    currentRow--;
+                    isChecked = true;                   
+                }                
+                break;
+        }
+        return isChecked;
+    }
+
+    private void ChangeDirection(bool right)
+    {
+        if (right)
+        {
+            if (currentDirection < 3)
+                currentDirection++;
+            else
+                currentDirection = 0; 
+        }
+        if (right == false)
+        {
+            if (currentDirection > 0)
+                currentDirection--;
+            else
+                currentDirection = 3;
+        }
+    }   
+
+    public void MovingByAlgorithm(int Action)
+    {      
+        switch (Action)
         {
             case 1:
                 isMoving = true;
@@ -46,10 +133,12 @@ public class CharacterMovement : MonoBehaviour
             case 2:
                 targetRotation = transform.rotation * Quaternion.Euler(0f, -90f, 0f);
                 isRotating = true;
+                    ChangeDirection(false);
                 break;
             case 3:
                 targetRotation = transform.rotation * Quaternion.Euler(0f, 90f, 0f);
                 isRotating = true;
+                    ChangeDirection(true);
                 break;
             case 4:
                 isInteracting = true;
@@ -62,22 +151,21 @@ public class CharacterMovement : MonoBehaviour
 
     private void MoveForward()
     {
+        //if (_levelStarter.CurrentLevelConfig.Grid.GetCell(currentRow, currentColumn) == CellType.None)
+        //{
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, animationCurve.Evaluate(speed) * speed * Time.deltaTime);
         if (transform.position == targetPosition)
         {
-            transform.position = targetPosition;                        // Для точности
+            transform.position = targetPosition;
             isMoving = false;
 
-            if (currentActions.Count > 1)
-            {
-                currentActions.RemoveAt(0);
-                MovingByAlgorithm(currentActions);
-            }
-            else
-            {
-                currentActions.Clear();
-                                                                       //добавить проверку на win/game over
-            }
+
+
+            //}
+            //else
+            //{
+            //   
+            //}
         }
     }
 
@@ -86,40 +174,19 @@ public class CharacterMovement : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         if (transform.rotation == targetRotation)
         {
-            transform.rotation = targetRotation;                       // Для точности
-            isRotating = false;
-
-            if (currentActions.Count > 1)
-            {
-                currentActions.RemoveAt(0);
-                MovingByAlgorithm(currentActions);
-            }
-            else
-            {
-                currentActions.Clear();
-                                                                    //добавить проверку на win/game over
-            }
+            transform.rotation = targetRotation;                       
+            isRotating = false;           
         }
     }
 
-    private void interaction()
+    private void Interaction()
     {
         currentWaitTime -= Time.deltaTime;
         if (currentWaitTime <= 0)
         {
             Debug.Log("Interaction finished");
             isInteracting = false;
-            currentWaitTime = waitTimer;
-            if (currentActions.Count > 1)
-            {
-                currentActions.RemoveAt(0);
-                MovingByAlgorithm(currentActions);
-            }
-            else
-            {
-                currentActions.Clear();
-                                                                    //добавить проверку на win/game over
-            }
+            currentWaitTime = waitTimer;            
         }
     }
 
@@ -130,16 +197,7 @@ public class CharacterMovement : MonoBehaviour
         {
             Debug.Log("Attack finished");
             isAttacking = false;
-            currentWaitTime = waitTimer;
-            if (currentActions.Count > 1)
-            {
-                currentActions.RemoveAt(0);
-                MovingByAlgorithm(currentActions);
-            }
-            else
-            {
-                currentActions.Clear();
-            }
+            currentWaitTime = waitTimer;           
         }
     }
 
@@ -150,7 +208,7 @@ public class CharacterMovement : MonoBehaviour
         if (isRotating)
             Rotate();
         if (isInteracting)
-            interaction();
+            Interaction();
         if (isAttacking)
             Attack();      
     }

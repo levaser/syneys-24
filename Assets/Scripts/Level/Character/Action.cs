@@ -1,4 +1,4 @@
 namespace Game.Character
 {
-    public abstract class Aciton
+    public abstract class Aciton { }
 }
