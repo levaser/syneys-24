@@ -14,12 +14,13 @@ namespace Game.Levels
 
         [SerializeField] private Transform _levelGridTransform;
         [SerializeField] private Transform _characterTransform;
+        [SerializeField] private Transform _handGridTransform;
 
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterEntryPoint<LevelInput>(Lifetime.Scoped).AsSelf();
 
-            // builder.Register<LevelStats>(Lifetime.Scoped);
+            builder.Register<LevelStats>(Lifetime.Scoped);
             builder.RegisterEntryPoint<LevelLoader>(Lifetime.Scoped)
                 .WithParameter(_levelGridTransform)
                 .WithParameter(_cellPrefabs);
@@ -35,7 +36,8 @@ namespace Game.Levels
 
             builder.Register<CharacterDeck>(Lifetime.Scoped);
 
-            builder.RegisterEntryPoint<CharacterActionHandler>(Lifetime.Scoped);
+            builder.RegisterEntryPoint<CharacterActionHandler>(Lifetime.Scoped)
+                .WithParameter("handGridTransform", _handGridTransform);
         }
     }
 }

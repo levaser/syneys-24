@@ -6,7 +6,7 @@ namespace Game.Character
     {
         public event System.Action<DefaultAction> ActionPerformed;
 
-        public DefaultAction _actionConfig;
+        private DefaultAction _actionConfig;
 
         public void Initialize(DefaultAction actionConfig)
         {

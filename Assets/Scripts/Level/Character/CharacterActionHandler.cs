@@ -20,12 +20,14 @@ namespace Game.Character
         (
             LevelStarter levelStarter,
             CharacterDeck characterDeck,
-            CharacterMover characterMover
+            CharacterMover characterMover,
+            Transform handGridTransform
         )
         {
             _levelConfig = levelStarter.CurrentLevelConfig;
             _characterDeck = characterDeck;
             _characterMover = characterMover;
+            _handGridTransform = handGridTransform;
 
             _handedActions = new List<ActionPerformObserver>();
         }
