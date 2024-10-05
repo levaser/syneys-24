@@ -158,9 +158,6 @@ public class CharacterMovement : MonoBehaviour
         {
             transform.position = targetPosition;
             isMoving = false;
-
-
-
             //}
             //else
             //{
