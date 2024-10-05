@@ -7,7 +7,9 @@ namespace Array2DEditor
     {
         None,
         Wall,
-        Enemy
+        Enemy,
+        Switcher,
+        Trap
     }
 
     [System.Serializable]

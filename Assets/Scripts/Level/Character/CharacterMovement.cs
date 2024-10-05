@@ -26,12 +26,14 @@ public class CharacterMovement : MonoBehaviour
     private int currentRow = 0;
     private int currentColumn = 0;
 
+    private int testSwitcher = 4;//test
+
     private int currentDirection = 0;
     private void Start()
     {
         currentPosition = new int[5, 5];
         currentWaitTime = waitTimer;
-        InitializationGrid();
+        InitializationGrid();        
     }
 
     #region TEST BUTTONS
@@ -46,12 +48,41 @@ public class CharacterMovement : MonoBehaviour
 
     public void Left()
     {
-        MovingByAlgorithm(2);
+        ChangeDirection(false);
+        if (CheckNextStep(currentDirection) == true)
+        {
+            MovingByAlgorithm(2);
+        }
+        else
+        {
+            ChangeDirection(true);
+        }
     }
 
     public void Right()
     {
-        MovingByAlgorithm(3);
+        ChangeDirection(true);
+        if (CheckNextStep(currentDirection) == true)
+        {
+            MovingByAlgorithm(3);
+        }
+        else
+        {
+            ChangeDirection(false);
+        }
+    }
+    public void Action()
+    {       
+        MovingByAlgorithm(4);
+        if (CheckSwitcher() == true)
+        {
+            Debug.Log("Switcher on");
+                     
+        }
+        else
+        {
+            Debug.Log("Try better");
+        }
     }
     #endregion
 
@@ -61,7 +92,7 @@ public class CharacterMovement : MonoBehaviour
         {
             for (int b = 0; b < currentPosition.GetLength(1); b++)
             {
-                currentPosition[i, b] = b;
+                currentPosition[i, b] = b;                
             }
         }
     }
@@ -104,6 +135,54 @@ public class CharacterMovement : MonoBehaviour
         return isChecked;
     }
 
+    private bool CheckSwitcher()
+    {
+        int column = currentColumn;
+        int row = currentRow;
+        bool isSwitcher = false;
+        
+        if (column < currentPosition.GetLength(1) - 1)
+        {
+            column++;
+            if (currentPosition[row, column] == testSwitcher)
+            {//  if (_levelStarter.CurrentLevelConfig.Grid.GetCell(row, column) == CellType.Switcher)
+                isSwitcher = true;
+            }
+        }
+        column = currentColumn;
+        row = currentRow;
+        if (column > 0)
+        {
+            column--;
+            if (currentPosition[row, column] == testSwitcher)
+            {//  if (_levelStarter.CurrentLevelConfig.Grid.GetCell(row, column) == CellType.Switcher)
+                isSwitcher = true;
+            }
+        }
+        column = currentColumn;
+        row = currentRow;
+        if (row < currentPosition.GetLength(0) - 1)
+        {
+            row++;
+            if (currentPosition[row, column] == testSwitcher)
+            {//  if (_levelStarter.CurrentLevelConfig.Grid.GetCell(row, column) == CellType.Switcher)
+                isSwitcher = true;
+            }
+        }
+        column = currentColumn;
+        row = currentRow;
+        if (row > 0)
+        {
+            row--;
+            if (currentPosition[row, column] == testSwitcher)
+            {//  if (_levelStarter.CurrentLevelConfig.Grid.GetCell(row, column) == CellType.Switcher)
+                isSwitcher = true;
+            }
+        }
+        return isSwitcher;
+
+    }
+
     private void ChangeDirection(bool right)
     {
         if (right)
@@ -130,18 +209,20 @@ public class CharacterMovement : MonoBehaviour
                 isMoving = true;
                 targetPosition = transform.position + transform.forward;
                 break;
-            case 2:
+            case 2:               
                 targetRotation = transform.rotation * Quaternion.Euler(0f, -90f, 0f);
                 isRotating = true;
-                    ChangeDirection(false);
+                targetPosition = transform.position + transform.right * -1;
+                isMoving = true;                
                 break;
             case 3:
                 targetRotation = transform.rotation * Quaternion.Euler(0f, 90f, 0f);
                 isRotating = true;
-                    ChangeDirection(true);
+                targetPosition = transform.position + transform.right;
+                isMoving = true;
                 break;
             case 4:
-                isInteracting = true;
+                isInteracting = true;                
                 break;
             case 5:
                 isAttacking = true;
@@ -151,19 +232,16 @@ public class CharacterMovement : MonoBehaviour
 
     private void MoveForward()
     {
-        //if (_levelStarter.CurrentLevelConfig.Grid.GetCell(currentRow, currentColumn) == CellType.None)
+        //if (_levelStarter.CurrentLevelConfig.Grid.GetCell(currentRow, currentColumn) == CellType.None ||
+        //     _levelStarter.CurrentLevelConfig.Grid.GetCell(currentRow, currentColumn) == CellType.Trap)
         //{
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, animationCurve.Evaluate(speed) * speed * Time.deltaTime);
-        if (transform.position == targetPosition)
-        {
-            transform.position = targetPosition;
-            isMoving = false;
-            //}
-            //else
-            //{
-            //
-            //}
-        }
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, animationCurve.Evaluate(speed) * speed * Time.deltaTime);
+            if (transform.position == targetPosition)
+            {
+                transform.position = targetPosition;
+                isMoving = false;                
+            }
+        //}
     }
 
     private void Rotate()
