@@ -68,7 +68,7 @@ namespace Game.Levels
 
                     Object.Instantiate(
                         prefab,
-                        new Vector3(column, 0, -row) + _gridTransform.localPosition,
+                        new Vector3(column, 0, row) + _gridTransform.localPosition,
                         Quaternion.Euler(0, Random.Range(0, 359), 0),
                         _gridTransform
                     );

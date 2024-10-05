@@ -12,5 +12,8 @@ namespace Game.Levels
 
         [field: SerializeField]
         public ActionDeckConfig ActionDeck { get; private set; }
+
+        [field: SerializeField]
+        public int HandedCardsNumber { get; private set; } = 4;
     }
 }
